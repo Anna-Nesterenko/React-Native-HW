@@ -35,6 +35,7 @@ export default function RegisterPage({ changePage }) {
   const submitForm = () => {
     setState(initialState);
     keyboardHide();
+    console.log(initialState);
   };
 
   const switchPage = () => {
@@ -102,6 +103,8 @@ export default function RegisterPage({ changePage }) {
                   </Text>
                 </TouchableOpacity>
               </View>
+              {/* {!isShowKeyboard && (
+                <> */}
               <TouchableOpacity
                 activeOpacity={0.7}
                 style={styles.formBtn}
@@ -112,6 +115,8 @@ export default function RegisterPage({ changePage }) {
               <TouchableOpacity onPress={switchPage}>
                 <Text style={styles.switchLink}>Вже є аккаунт? Увійти</Text>
               </TouchableOpacity>
+              {/* </>
+              )} */}
             </KeyboardAvoidingView>
           </View>
         </ImageBackground>

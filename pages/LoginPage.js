@@ -79,18 +79,20 @@ export default function LoginPage({ changePage }) {
                 </Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={styles.formBtn}
-              onPress={submitForm}
-            >
-              <Text style={styles.formBtnText}>Увійти</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={switchPage}>
-              <Text style={styles.switchLink}>
-                Немає аккаунта? Зареєструватися
-              </Text>
-            </TouchableOpacity>
+           
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={styles.formBtn}
+                  onPress={submitForm}
+                >
+                  <Text style={styles.formBtnText}>Увійти</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={switchPage}>
+                  <Text style={styles.switchLink}>
+                    Немає аккаунта? Зареєструватися
+                  </Text>
+                </TouchableOpacity>
+              
           </KeyboardAvoidingView>
         </View>
       </ImageBackground>
