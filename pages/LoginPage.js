@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import imageBg from "../assets/images/PhotoBG.png";
 import {
   View,
@@ -11,6 +11,7 @@ import {
   ImageBackground,
   KeyboardAvoidingView,
 } from "react-native";
+import Input from "../components/Input";
 
 const initialState = {
   email: "",
@@ -19,8 +20,27 @@ const initialState = {
 
 export default function LoginPage({ changePage }) {
   const [state, setState] = useState(initialState);
-  const [hidePassword, setHidePassword] = useState(true);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setIsShowKeyboard(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setIsShowKeyboard(false);
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -29,8 +49,9 @@ export default function LoginPage({ changePage }) {
   };
 
   const submitForm = () => {
-    setState(initialState);
+    setState(state);
     keyboardHide();
+    console.log(state);
   };
 
   const switchPage = () => {
@@ -50,8 +71,7 @@ export default function LoginPage({ changePage }) {
             behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
             <Text style={styles.pageTitle}>Вхід</Text>
-            <TextInput
-              style={styles.input}
+            <Input
               onFocus={() => setIsShowKeyboard(true)}
               onChangeText={(value) =>
                 setState((prevState) => ({ ...prevState, email: value }))
@@ -59,27 +79,17 @@ export default function LoginPage({ changePage }) {
               value={state.email}
               placeholder="Введіть email"
             />
-            <View>
-              <TextInput
-                style={styles.input}
-                onFocus={() => setIsShowKeyboard(true)}
-                onChangeText={(value) =>
-                  setState((prevState) => ({ ...prevState, password: value }))
-                }
-                value={state.password}
-                secureTextEntry={hidePassword}
-                placeholder="Введіть пароль"
-              />
-              <TouchableOpacity
-                style={styles.showPassBtn}
-                onPress={() => setHidePassword((prevState) => !prevState)}
-              >
-                <Text style={styles.switchTextPassword}>
-                  {hidePassword ? "Показати" : "Сховати"}
-                </Text>
-              </TouchableOpacity>
-            </View>
-           
+            <Input
+              onFocus={() => setIsShowKeyboard(true)}
+              onChangeText={(value) =>
+                setState((prevState) => ({ ...prevState, password: value }))
+              }
+              value={state.password}
+              placeholder="Введіть пароль"
+              password
+            />
+            {!isShowKeyboard && (
+              <>
                 <TouchableOpacity
                   activeOpacity={0.7}
                   style={styles.formBtn}
@@ -92,7 +102,8 @@ export default function LoginPage({ changePage }) {
                     Немає аккаунта? Зареєструватися
                   </Text>
                 </TouchableOpacity>
-              
+              </>
+            )}
           </KeyboardAvoidingView>
         </View>
       </ImageBackground>
@@ -137,26 +148,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: "#FFFFFF",
-  },
-  input: {
-    backgroundColor: "#F6F6F6",
-    borderWidth: 1,
-    borderColor: "#E8E8E8",
-    borderRadius: 8,
-    width: "100%",
-    padding: 15,
-    marginBottom: 16,
-  },
-  showPassBtn: {
-    position: "absolute",
-    right: 16,
-    top: "30%",
-  },
-  switchTextPassword: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-    lineHeight: 19,
-    color: "#1B4371",
   },
   switchLink: {
     fontFamily: "Roboto-Regular",

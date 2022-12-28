@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import imageBg from "../assets/images/PhotoBG.png";
 import Avatar from "../components/Avatar";
 
@@ -7,12 +7,12 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  TextInput,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
   ImageBackground,
 } from "react-native";
+import Input from "../components/Input";
 
 const initialState = {
   name: "",
@@ -22,9 +22,27 @@ const initialState = {
 
 export default function RegisterPage({ changePage }) {
   const [state, setState] = useState(initialState);
-  const [hidePassword, setHidePassword] = useState(true);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  //   const [isFocused, setIsFocused] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setIsShowKeyboard(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setIsShowKeyboard(false);
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -33,17 +51,13 @@ export default function RegisterPage({ changePage }) {
   };
 
   const submitForm = () => {
-    setState(initialState);
+    setState(state);
     keyboardHide();
-    console.log(initialState);
+    console.log(state);
   };
 
   const switchPage = () => {
     changePage("Login");
-  };
-  const handleFocus = () => {
-    setIsShowKeyboard(true);
-    // setIsFocused(true);
   };
 
   return (
@@ -61,62 +75,45 @@ export default function RegisterPage({ changePage }) {
             >
               <Avatar />
               <Text style={styles.pageTitle}>Реєстрація</Text>
-              <TextInput
-                style={{ ...styles.input }}
-                //   borderColor: isFocused ? "#FF6C00" : "#E8E8E8",
-                onFocus={handleFocus}
-                // onBlur={() => setIsFocused(false)}
+              <Input
+                onFocus={() => setIsShowKeyboard(true)}
                 onChangeText={(value) =>
                   setState((prevState) => ({ ...prevState, name: value }))
                 }
                 value={state.name}
                 placeholder="Введіть iм'я"
               />
-              <TextInput
-                style={styles.input}
-                onFocus={handleFocus}
-                // onBlur={() => setIsFocused(false)}
+              <Input
+                onFocus={() => setIsShowKeyboard(true)}
                 onChangeText={(value) =>
                   setState((prevState) => ({ ...prevState, email: value }))
                 }
                 value={state.email}
                 placeholder="Введіть email"
               />
-              <View>
-                <TextInput
-                  style={styles.input}
-                  onFocus={handleFocus}
-                  //   onBlur={() => setIsFocused(false)}
-                  onChangeText={(value) =>
-                    setState((prevState) => ({ ...prevState, password: value }))
-                  }
-                  value={state.password}
-                  secureTextEntry={hidePassword}
-                  placeholder="Введіть пароль"
-                />
-                <TouchableOpacity
-                  style={styles.showPassBtn}
-                  onPress={() => setHidePassword((prevState) => !prevState)}
-                >
-                  <Text style={styles.switchTextPassword}>
-                    {hidePassword ? "Показати" : "Сховати"}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              {/* {!isShowKeyboard && (
-                <> */}
-              <TouchableOpacity
-                activeOpacity={0.7}
-                style={styles.formBtn}
-                onPress={submitForm}
-              >
-                <Text style={styles.formBtnText}>Зареєструватися</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={switchPage}>
-                <Text style={styles.switchLink}>Вже є аккаунт? Увійти</Text>
-              </TouchableOpacity>
-              {/* </>
-              )} */}
+              <Input
+                onFocus={() => setIsShowKeyboard(true)}
+                onChangeText={(value) =>
+                  setState((prevState) => ({ ...prevState, password: value }))
+                }
+                value={state.password}
+                placeholder="Введіть пароль"
+                password
+              />
+              {!isShowKeyboard && (
+                <>
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    style={styles.formBtn}
+                    onPress={submitForm}
+                  >
+                    <Text style={styles.formBtnText}>Зареєструватися</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={switchPage}>
+                    <Text style={styles.switchLink}>Вже є аккаунт? Увійти</Text>
+                  </TouchableOpacity>
+                </>
+              )}
             </KeyboardAvoidingView>
           </View>
         </ImageBackground>
@@ -165,26 +162,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: "#FFFFFF",
-  },
-  input: {
-    backgroundColor: "#F6F6F6",
-    borderWidth: 1,
-    borderColor: "#E8E8E8",
-    borderRadius: 8,
-    width: "100%",
-    padding: 15,
-    marginBottom: 16,
-  },
-  showPassBtn: {
-    position: "absolute",
-    right: 16,
-    top: "30%",
-  },
-  switchTextPassword: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-    lineHeight: 19,
-    color: "#1B4371",
   },
   switchLink: {
     fontFamily: "Roboto-Regular",
