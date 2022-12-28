@@ -1,24 +1,24 @@
 import { useState, useEffect } from "react";
 import imageBg from "../assets/images/PhotoBG.png";
+import Input from "../components/Input";
+
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  TextInput,
   TouchableWithoutFeedback,
   Keyboard,
   ImageBackground,
   KeyboardAvoidingView,
 } from "react-native";
-import Input from "../components/Input";
 
 const initialState = {
   email: "",
   password: "",
 };
 
-export default function LoginPage({ changePage }) {
+export default function LoginPage({ changeScreen }) {
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
@@ -54,8 +54,8 @@ export default function LoginPage({ changePage }) {
     console.log(state);
   };
 
-  const switchPage = () => {
-    changePage("Registration");
+  const switchScreen = () => {
+    changeScreen("Registration");
   };
 
   return (
@@ -97,7 +97,7 @@ export default function LoginPage({ changePage }) {
                 >
                   <Text style={styles.formBtnText}>Увійти</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={switchPage}>
+                <TouchableOpacity onPress={switchScreen}>
                   <Text style={styles.switchLink}>
                     Немає аккаунта? Зареєструватися
                   </Text>

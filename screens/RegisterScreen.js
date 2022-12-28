@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import imageBg from "../assets/images/PhotoBG.png";
 import Avatar from "../components/Avatar";
+import Input from "../components/Input";
 
 import {
   View,
@@ -12,7 +13,6 @@ import {
   Keyboard,
   ImageBackground,
 } from "react-native";
-import Input from "../components/Input";
 
 const initialState = {
   name: "",
@@ -20,7 +20,7 @@ const initialState = {
   password: "",
 };
 
-export default function RegisterPage({ changePage }) {
+export default function RegisterPage({ changeScreen }) {
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
@@ -56,8 +56,8 @@ export default function RegisterPage({ changePage }) {
     console.log(state);
   };
 
-  const switchPage = () => {
-    changePage("Login");
+  const switchScreen = () => {
+    changeScreen("Login");
   };
 
   return (
@@ -109,7 +109,7 @@ export default function RegisterPage({ changePage }) {
                   >
                     <Text style={styles.formBtnText}>Зареєструватися</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={switchPage}>
+                  <TouchableOpacity onPress={switchScreen}>
                     <Text style={styles.switchLink}>Вже є аккаунт? Увійти</Text>
                   </TouchableOpacity>
                 </>
