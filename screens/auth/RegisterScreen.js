@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import imageBg from "../assets/images/PhotoBG.png";
-import Avatar from "../components/Avatar";
-import Input from "../components/Input";
+import imageBg from "../../assets/images/PhotoBG.png";
+import Avatar from "../../components/Avatar";
+import Input from "../../components/Input";
 
 import {
   View,
@@ -20,7 +20,7 @@ const initialState = {
   password: "",
 };
 
-export default function RegisterPage({ changeScreen }) {
+export default function RegisterPage({ navigation }) {
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
@@ -53,11 +53,13 @@ export default function RegisterPage({ changeScreen }) {
   const submitForm = () => {
     setState(state);
     keyboardHide();
-    console.log(state);
-  };
-
-  const switchScreen = () => {
-    changeScreen("Login");
+     navigation.navigate("Home", {
+       screen: "Posts",
+       //   params: {
+       //     email: "nura_arh@ukr.net",
+       //     password: "12345678",
+       //   },
+     });
   };
 
   return (
@@ -109,9 +111,15 @@ export default function RegisterPage({ changeScreen }) {
                   >
                     <Text style={styles.formBtnText}>Зареєструватися</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={switchScreen}>
-                    <Text style={styles.switchLink}>Вже є аккаунт? Увійти</Text>
-                  </TouchableOpacity>
+
+                  <View style={styles.authFooter}>
+                    <Text style={styles.switchText}>Вже є аккаунт? </Text>
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate("Login")}
+                    >
+                      <Text style={styles.switchLink}>Увійти</Text>
+                    </TouchableOpacity>
+                  </View>
                 </>
               )}
             </KeyboardAvoidingView>
@@ -163,11 +171,20 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     color: "#FFFFFF",
   },
+  authFooter: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  switchText: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+  },
   switchLink: {
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
-    textAlign: "center",
     color: "#1B4371",
     textDecorationLine: "underline",
   },
