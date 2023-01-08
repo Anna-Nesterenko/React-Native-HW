@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   },
   inputWrapper: {
     position: "relative",
-    marginTop: 32,
+    marginTop: 22,
   },
   input: {
     height: 50,
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#E8E8E8",
     fontFamily: "Roboto-Regular",
     fontSize: 16,
-    color: "#656565",
+    color: "#212121",
   },
   sendBtn: {
     fontFamily: "Roboto-Regular",
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     height: 50,
     marginHorizontal: 16,
     marginTop: 32,
-    marginBottom: 112,
+    marginBottom: 120,
     borderRadius: 100,
   },
   sendBtnTitle: {
