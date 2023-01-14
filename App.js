@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { useFonts } from "expo-font/build/FontHooks";
 import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer } from "@react-navigation/native";
-import { useRoute } from "./components/AuthRouter";
+import { useRoute } from "./src/screens/auth/AuthScreen";
 
 export default function App() {
   const [user, setUser] = useState(null);

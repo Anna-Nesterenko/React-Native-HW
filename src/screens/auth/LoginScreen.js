@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import imageBg from "../../assets/images/PhotoBG.png";
+import imageBg from "../../../assets/images/PhotoBG.png";
 import Input from "../../components/Input";
 
 import {
@@ -51,13 +51,11 @@ export default function LoginPage({ navigation }) {
   const submitForm = () => {
     setState(state);
     keyboardHide();
-    navigation.navigate("Home", {
-      screen: "Posts",
-    //   params: {
-    //     email: "nura_arh@ukr.net",
-    //     password: "12345678",
-    //   },
-    });
+    navigation.navigate("Home", { screen: "Posts" });
+  };
+
+  const handleInput = (type, value) => {
+    setState((prevState) => ({ ...prevState, [type]: value }));
   };
 
   return (
@@ -75,18 +73,14 @@ export default function LoginPage({ navigation }) {
             <Text style={styles.pageTitle}>Вхід</Text>
             <Input
               onFocus={() => setIsShowKeyboard(true)}
-              onChangeText={(value) =>
-                setState((prevState) => ({ ...prevState, email: value }))
-              }
               value={state.email}
+              onChangeText={(value) => handleInput("email", value)}
               placeholder="Введіть email"
             />
             <Input
               onFocus={() => setIsShowKeyboard(true)}
-              onChangeText={(value) =>
-                setState((prevState) => ({ ...prevState, password: value }))
-              }
               value={state.password}
+              onChangeText={(value) => handleInput("password", value)}
               placeholder="Введіть пароль"
               password
             />

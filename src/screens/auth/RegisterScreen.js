@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import imageBg from "../../assets/images/PhotoBG.png";
+import imageBg from "../../../assets/images/PhotoBG.png";
 import Avatar from "../../components/Avatar";
 import Input from "../../components/Input";
 
@@ -53,15 +53,17 @@ export default function RegisterPage({ navigation }) {
   const submitForm = () => {
     setState(state);
     keyboardHide();
-     navigation.navigate("Home", {
-       screen: "Posts",
-       //   params: {
-       //     email: "nura_arh@ukr.net",
-       //     password: "12345678",
-       //   },
-     });
+    navigation.navigate("Home", {
+      screen: "Posts",
+      //   params: {
+      //     email: "nura_arh@ukr.net",
+      //     password: "12345678",
+      //   },
+    });
   };
-
+  const handleInput = (type, value) => {
+    setState((prevState) => ({ ...prevState, [type]: value }));
+  };
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
@@ -79,26 +81,20 @@ export default function RegisterPage({ navigation }) {
               <Text style={styles.pageTitle}>Реєстрація</Text>
               <Input
                 onFocus={() => setIsShowKeyboard(true)}
-                onChangeText={(value) =>
-                  setState((prevState) => ({ ...prevState, name: value }))
-                }
                 value={state.name}
+                onChangeText={(value) => handleInput("name", value)}
                 placeholder="Введіть iм'я"
               />
               <Input
                 onFocus={() => setIsShowKeyboard(true)}
-                onChangeText={(value) =>
-                  setState((prevState) => ({ ...prevState, email: value }))
-                }
                 value={state.email}
+                onChangeText={(value) => handleInput("email", value)}
                 placeholder="Введіть email"
               />
               <Input
                 onFocus={() => setIsShowKeyboard(true)}
-                onChangeText={(value) =>
-                  setState((prevState) => ({ ...prevState, password: value }))
-                }
                 value={state.password}
+                onChangeText={(value) => handleInput("password", value)}
                 placeholder="Введіть пароль"
                 password
               />

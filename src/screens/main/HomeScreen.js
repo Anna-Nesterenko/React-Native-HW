@@ -1,9 +1,8 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { HeaderBackButton } from "@react-navigation/elements";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import { Octicons } from "@expo/vector-icons";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 
 import ProfileScreen from "./ProfileScreen";
@@ -12,9 +11,7 @@ import PostsScreen from "./PostsScreen";
 
 const MainTab = createBottomTabNavigator();
 
-export default function Home({ navigation }) {
-  const logout = () => navigation.navigate("Login");
-
+export default function Home() {
   return (
     <MainTab.Navigator
       screenOptions={{
@@ -36,13 +33,15 @@ export default function Home({ navigation }) {
       <MainTab.Screen
         name="Posts"
         component={PostsScreen}
-        options={{
-          title: "Публікації",
-          headerRight: () => (
-            <TouchableOpacity style={{ marginRight: 16 }} onPress={logout}>
-              <Octicons name="sign-out" size={24} color="#BDBDBD" />
-            </TouchableOpacity>
-          ),
+        options={({ route }) => ({
+          tabBarStyle: ((route) => {
+            const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+            if (routeName === "Comments" || routeName === "Map") {
+              return { display: "none" };
+            }
+            return { height: 85, paddingLeft: 80, paddingRight: 80 };
+          })(route),
+          headerShown: false,
           tabBarIcon: ({ focused, color }) => (
             <View
               style={{
@@ -61,25 +60,25 @@ export default function Home({ navigation }) {
               />
             </View>
           ),
-        }}
+        })}
       />
       <MainTab.Screen
         name="CreatePosts"
         component={CreatePostsScreen}
         options={({ navigation }) => ({
           title: "Створити публікацію",
-          //   tabBarHideOnKeyboard: true,
+          tabBarHideOnKeyboard: true,
           headerLeft: () => (
-            <HeaderBackButton
-              onPress={() => navigation.navigate("Home", { screen: "Posts" })}
-              backImage={() => (
-                <AntDesign
-                  name="arrowleft"
-                  size={24}
-                  color="rgba(33,33,33,0.8)"
-                />
-              )}
-            />
+            <TouchableOpacity
+              style={{ marginLeft: 16 }}
+              onPress={() => navigation.goBack()}
+            >
+              <AntDesign
+                name="arrowleft"
+                size={24}
+                color="rgba(33,33,33,0.8)"
+              />
+            </TouchableOpacity>
           ),
           tabBarStyle: {
             display: "none",
