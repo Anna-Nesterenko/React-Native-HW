@@ -11,21 +11,22 @@ export const useRoute = (isAuth) => {
     return (
       <AuthStack.Navigator>
         <AuthStack.Screen
-            options={{ headerShown: false }}
+          options={{ headerShown: false }}
           name="Login"
           component={LoginScreen}
         />
         <AuthStack.Screen
-            options={{ headerShown: false }}
+          options={{ headerShown: false }}
           name="Register"
           component={RegisterScreen}
         />
-        <AuthStack.Screen
+        {/* <AuthStack.Screen
             options={{ headerShown: false }}
           name="Home"
           component={HomeScreen}
-        />
+        /> */}
       </AuthStack.Navigator>
     );
   }
+  return <HomeScreen></HomeScreen>;
 };

@@ -1,12 +1,21 @@
 import { useState, useCallback } from "react";
+import { Provider } from "react-redux";
 import { useFonts } from "expo-font/build/FontHooks";
 import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer } from "@react-navigation/native";
 import { useRoute } from "./src/screens/auth/AuthScreen";
+import { store } from "./src/redux/store";
+
+import { onAuthStateChanged } from "firebase/auth";
+import { Alert } from "react-native";
+import { auth } from "./src/firebase/config";
 
 export default function App() {
   const [user, setUser] = useState(null);
 
+  onAuthStateChanged(auth, (user) => {
+    setUser(user);
+  });
   const routing = useRoute(user);
 
   const [fontsLoaded] = useFonts({
@@ -26,8 +35,10 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer onLayout={onLayoutRootView}>
-      {routing}
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer onLayout={onLayoutRootView}>
+        {routing}
+      </NavigationContainer>
+    </Provider>
   );
 }

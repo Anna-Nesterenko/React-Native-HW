@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import imageBg from "../../../assets/images/PhotoBG.png";
 import Input from "../../components/Input";
-
+import { authSignInUser } from "../../redux/auth/authOperations";
 import {
   View,
   Text,
@@ -21,6 +22,8 @@ const initialState = {
 export default function LoginPage({ navigation }) {
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -49,9 +52,11 @@ export default function LoginPage({ navigation }) {
   };
 
   const submitForm = () => {
-    setState(state);
+    // setState(state);
     keyboardHide();
-    navigation.navigate("Home", { screen: "Posts" });
+    dispatch(authSignInUser(state));
+    console.log("submitFormLogin", state);
+    // navigation.navigate("Home", { screen: "Posts" });
   };
 
   const handleInput = (type, value) => {

@@ -33,7 +33,7 @@ export default function DefaultPostsScreen({ navigation, route }) {
       <TouchableOpacity
         style={styles.avatarWrapper}
         activeOpacity={0.7}
-        onPress={() => navigation.navigate("Home", { screen: "Profile" })}
+        onPress={() => navigation.navigate("Profile")}
       >
         <View style={{ overflow: "hidden", borderRadius: 16 }}>
           <ImageBackground

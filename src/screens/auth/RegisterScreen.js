@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import imageBg from "../../../assets/images/PhotoBG.png";
 import Avatar from "../../components/Avatar";
 import Input from "../../components/Input";
-
+import { useDispatch } from "react-redux";
+import { authSignUpUser } from "../../redux/auth/authOperations";
 import {
   View,
   Text,
@@ -23,6 +24,7 @@ const initialState = {
 export default function RegisterPage({ navigation }) {
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -51,15 +53,17 @@ export default function RegisterPage({ navigation }) {
   };
 
   const submitForm = () => {
-    setState(state);
     keyboardHide();
-    navigation.navigate("Home", {
-      screen: "Posts",
-      //   params: {
-      //     email: "nura_arh@ukr.net",
-      //     password: "12345678",
-      //   },
-    });
+    dispatch(authSignUpUser(state));
+    console.log("submitFormRegister", state);
+
+    // navigation.navigate("Home", {
+    //   screen: "Posts",
+    //   params: {
+    //     email: "nura_arh@ukr.net",
+    //     password: "123456",
+    //   },
+    // });
   };
   const handleInput = (type, value) => {
     setState((prevState) => ({ ...prevState, [type]: value }));

@@ -70,12 +70,11 @@ export default function CreatePostsScreen({ navigation }) {
       await MediaLibrary.createAssetAsync(photo.uri);
 
       let location = await Location.getCurrentPositionAsync({});
-     
+
       setPostData((prevState) => ({ ...prevState, photo: photo.uri }));
       setLocation(location);
 
-		console.log("location", location);
-
+      // console.log("location", location);
     } catch (error) {
       console.log(error);
     }

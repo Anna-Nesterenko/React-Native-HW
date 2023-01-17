@@ -11,7 +11,7 @@ import PostsScreen from "./PostsScreen";
 
 const MainTab = createBottomTabNavigator();
 
-export default function Home() {
+export default function HomeScreen() {
   return (
     <MainTab.Navigator
       screenOptions={{

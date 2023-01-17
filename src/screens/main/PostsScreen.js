@@ -9,7 +9,7 @@ import { AntDesign } from "@expo/vector-icons";
 const NestedScreen = createNativeStackNavigator();
 
 const PostsScreen = ({ navigation }) => {
-  const logout = () => navigation.navigate("Login");
+  //   const logout = () => navigation.navigate("Login");
   return (
     <NestedScreen.Navigator
       screenOptions={{
@@ -31,7 +31,8 @@ const PostsScreen = ({ navigation }) => {
         options={{
           title: "Публікації",
           headerRight: () => (
-            <TouchableOpacity onPress={logout}>
+            <TouchableOpacity>
+              {/* <TouchableOpacity onPress={logout}> */}
               <Octicons name="sign-out" size={24} color="#BDBDBD" />
             </TouchableOpacity>
           ),
