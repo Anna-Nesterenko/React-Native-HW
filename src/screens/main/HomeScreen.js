@@ -66,7 +66,7 @@ export default function HomeScreen() {
         name="CreatePosts"
         component={CreatePostsScreen}
         options={({ navigation }) => ({
-          title: "Створити публікацію",
+          title: "Create a publication",
           tabBarHideOnKeyboard: true,
           headerLeft: () => (
             <TouchableOpacity

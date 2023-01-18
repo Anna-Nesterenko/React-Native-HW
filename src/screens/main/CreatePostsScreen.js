@@ -155,20 +155,20 @@ export default function CreatePostsScreen({ navigation }) {
                 color: "#BDBDBD",
               }}
             >
-              Зробити фото
+              Take photo
             </Text>
           </View>
           <View style={styles.inputWrapper}>
             <TextInput
               style={{ ...styles.input, marginBottom: 16 }}
-              placeholder="Введіть назву..."
+              placeholder="Enter a title..."
               onFocus={() => setIsShowKeyboard(true)}
               value={postData.description}
               onChangeText={(value) => handleInput("description", value)}
             />
             <TextInput
               style={{ ...styles.input, paddingLeft: 28 }}
-              placeholder="Виберіть місцевість..."
+              placeholder="Select a location..."
               onFocus={() => setIsShowKeyboard(true)}
               value={postData.place}
               onChangeText={(value) => handleInput("place", value)}
@@ -200,7 +200,7 @@ export default function CreatePostsScreen({ navigation }) {
                   color: postData.photo ? "#fff" : "#BDBDBD",
                 }}
               >
-                Опублікувати
+                Publish post
               </Text>
             </TouchableOpacity>
           </View>

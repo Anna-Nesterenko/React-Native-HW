@@ -55,7 +55,7 @@ export default function RegisterPage({ navigation }) {
   const submitForm = () => {
     keyboardHide();
     dispatch(authSignUpUser(state));
-    console.log("submitFormRegister", state);
+    // console.log("submitFormRegister", state);
 
     // navigation.navigate("Home", {
     //   screen: "Posts",
@@ -82,24 +82,24 @@ export default function RegisterPage({ navigation }) {
               behavior={Platform.OS == "ios" ? "padding" : "height"}
             >
               <Avatar />
-              <Text style={styles.pageTitle}>Реєстрація</Text>
+              <Text style={styles.pageTitle}>Registration</Text>
               <Input
                 onFocus={() => setIsShowKeyboard(true)}
                 value={state.name}
                 onChangeText={(value) => handleInput("name", value)}
-                placeholder="Введіть iм'я"
+                placeholder="Enter your name"
               />
               <Input
                 onFocus={() => setIsShowKeyboard(true)}
                 value={state.email}
                 onChangeText={(value) => handleInput("email", value)}
-                placeholder="Введіть email"
+                placeholder="Enter your email"
               />
               <Input
                 onFocus={() => setIsShowKeyboard(true)}
                 value={state.password}
                 onChangeText={(value) => handleInput("password", value)}
-                placeholder="Введіть пароль"
+                placeholder="Enter your password"
                 password
               />
               {!isShowKeyboard && (
@@ -109,15 +109,17 @@ export default function RegisterPage({ navigation }) {
                     style={styles.formBtn}
                     onPress={submitForm}
                   >
-                    <Text style={styles.formBtnText}>Зареєструватися</Text>
+                    <Text style={styles.formBtnText}>Sign Up</Text>
                   </TouchableOpacity>
 
                   <View style={styles.authFooter}>
-                    <Text style={styles.switchText}>Вже є аккаунт? </Text>
+                    <Text style={styles.switchText}>
+                      Already have an account?{" "}
+                    </Text>
                     <TouchableOpacity
                       onPress={() => navigation.navigate("Login")}
                     >
-                      <Text style={styles.switchLink}>Увійти</Text>
+                      <Text style={styles.switchLink}> Log In</Text>
                     </TouchableOpacity>
                   </View>
                 </>

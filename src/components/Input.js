@@ -34,7 +34,7 @@ const Input = ({ password, onFocus = () => {}, ...props }) => {
           onPress={() => setHidePassword(!hidePassword)}
         >
           <Text style={styles.switchTextPassword}>
-            {hidePassword ? "Показати" : "Сховати"}
+            {hidePassword ? "show" : "hide"}
           </Text>
         </TouchableOpacity>
       )}

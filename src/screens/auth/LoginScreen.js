@@ -55,7 +55,7 @@ export default function LoginPage({ navigation }) {
     // setState(state);
     keyboardHide();
     dispatch(authSignInUser(state));
-    console.log("submitFormLogin", state);
+    // console.log("submitFormLogin", state);
     // navigation.navigate("Home", { screen: "Posts" });
   };
 
@@ -75,18 +75,18 @@ export default function LoginPage({ navigation }) {
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
-            <Text style={styles.pageTitle}>Вхід</Text>
+            <Text style={styles.pageTitle}>Login</Text>
             <Input
               onFocus={() => setIsShowKeyboard(true)}
               value={state.email}
               onChangeText={(value) => handleInput("email", value)}
-              placeholder="Введіть email"
+              placeholder="Enter your email"
             />
             <Input
               onFocus={() => setIsShowKeyboard(true)}
               value={state.password}
               onChangeText={(value) => handleInput("password", value)}
-              placeholder="Введіть пароль"
+              placeholder="Enter your password"
               password
             />
             {!isShowKeyboard && (
@@ -96,14 +96,14 @@ export default function LoginPage({ navigation }) {
                   style={styles.formBtn}
                   onPress={submitForm}
                 >
-                  <Text style={styles.formBtnText}>Увійти</Text>
+                  <Text style={styles.formBtnText}>Log In</Text>
                 </TouchableOpacity>
                 <View style={styles.authFooter}>
-                  <Text style={styles.switchText}>Немає аккаунта? </Text>
+                  <Text style={styles.switchText}>Don't have an account? </Text>
                   <TouchableOpacity
                     onPress={() => navigation.navigate("Register")}
                   >
-                    <Text style={styles.switchLink}>Зареєструватися</Text>
+                    <Text style={styles.switchLink}> Sign Up</Text>
                   </TouchableOpacity>
                 </View>
               </>

@@ -1,15 +1,22 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DefaultPostsScreen from "../nested/DefaultPostsScreen";
+import { useDispatch } from "react-redux";
 import CommentsScreen from "../nested/CommentsScreen";
 import MapScreen from "../nested/MapScreen";
 import { TouchableOpacity } from "react-native";
 import { Octicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import { authSignOutUser } from "../../redux/auth/authOperations";
 
 const NestedScreen = createNativeStackNavigator();
 
-const PostsScreen = ({ navigation }) => {
-  //   const logout = () => navigation.navigate("Login");
+const PostsScreen = () => {
+  const dispatch = useDispatch();
+  //   const { email, name } = useSelector((state) => state.auth);
+  const signOut = () => {
+    dispatch(authSignOutUser());
+  };
+
   return (
     <NestedScreen.Navigator
       screenOptions={{
@@ -29,10 +36,9 @@ const PostsScreen = ({ navigation }) => {
         name="DefaultPost"
         component={DefaultPostsScreen}
         options={{
-          title: "Публікації",
+          title: "The Publications",
           headerRight: () => (
-            <TouchableOpacity>
-              {/* <TouchableOpacity onPress={logout}> */}
+            <TouchableOpacity onPress={signOut}>
               <Octicons name="sign-out" size={24} color="#BDBDBD" />
             </TouchableOpacity>
           ),
@@ -42,7 +48,7 @@ const PostsScreen = ({ navigation }) => {
         name="Comments"
         component={CommentsScreen}
         options={({ navigation }) => ({
-          title: "Коментарі",
+          title: "The Comments",
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <AntDesign
@@ -58,7 +64,7 @@ const PostsScreen = ({ navigation }) => {
         name="Map"
         component={MapScreen}
         options={({ navigation }) => ({
-          title: "Мапа",
+          title: "Map & location",
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <AntDesign
