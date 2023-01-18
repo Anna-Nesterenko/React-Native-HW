@@ -155,7 +155,7 @@ export default function CreatePostsScreen({ navigation }) {
                 color: "#BDBDBD",
               }}
             >
-              Take photo
+              Take new photo
             </Text>
           </View>
           <View style={styles.inputWrapper}>
@@ -200,7 +200,7 @@ export default function CreatePostsScreen({ navigation }) {
                   color: postData.photo ? "#fff" : "#BDBDBD",
                 }}
               >
-                Publish post
+                Publish new post
               </Text>
             </TouchableOpacity>
           </View>

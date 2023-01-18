@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { NavigationContainer } from "@react-navigation/native";
-import { useRoute } from "../screens/auth/AuthScreen"
+import { useRoute } from "../screens/Auth/AuthScreen";
 
 import { authStateChangeUser } from "../redux/auth/authOperations";
 

@@ -1,9 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
 
 import ProfileScreen from "./ProfileScreen";
 import CreatePostsScreen from "./CreatePostsScreen";
@@ -66,7 +66,7 @@ export default function HomeScreen() {
         name="CreatePosts"
         component={CreatePostsScreen}
         options={({ navigation }) => ({
-          title: "Create a publication",
+          title: "Create new publication",
           tabBarHideOnKeyboard: true,
           headerLeft: () => (
             <TouchableOpacity

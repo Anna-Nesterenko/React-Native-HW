@@ -1,16 +1,17 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import DefaultPostsScreen from "../nested/DefaultPostsScreen";
-import { useDispatch } from "react-redux";
-import CommentsScreen from "../nested/CommentsScreen";
-import MapScreen from "../nested/MapScreen";
 import { TouchableOpacity } from "react-native";
+import { useDispatch } from "react-redux";
 import { Octicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+
+import DefaultPostsScreen from "../Nested/DefaultPostsScreen";
+import CommentsScreen from "../Nested/CommentsScreen";
+import MapScreen from "../Nested/MapScreen";
 import { authSignOutUser } from "../../redux/auth/authOperations";
 
 const NestedScreen = createNativeStackNavigator();
 
-const PostsScreen = () => {
+export default function PostsScreen() {
   const dispatch = useDispatch();
   //   const { email, name } = useSelector((state) => state.auth);
   const signOut = () => {
@@ -78,6 +79,6 @@ const PostsScreen = () => {
       />
     </NestedScreen.Navigator>
   );
-};
+}
 
-export default PostsScreen;
+// export default PostsScreen;
