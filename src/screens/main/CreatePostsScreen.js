@@ -4,6 +4,11 @@ import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
 import { Octicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../../firebase/config";
+// console.log("getStorage", getStorage);
 import {
   Text,
   StyleSheet,
@@ -25,11 +30,12 @@ const initialPostData = {
 export default function CreatePostsScreen({ navigation }) {
   const [postData, setPostData] = useState(initialPostData);
   const [camera, setCamera] = useState(null);
+  const [city, setCity] = useState("");
   const [location, setLocation] = useState(null);
   const [type, setType] = useState(CameraType.back);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  //   const [isPostDataReady, setIsPostDataReady] = useState(true);
 
+  //   перевірка клавіатури
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       "keyboardDidShow",
@@ -43,13 +49,18 @@ export default function CreatePostsScreen({ navigation }) {
         setIsShowKeyboard(false);
       }
     );
-
     return () => {
       keyboardDidHideListener.remove();
       keyboardDidShowListener.remove();
     };
   }, []);
 
+  const keyboardHide = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+  };
+
+  //   запрос на встановлення локації
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -59,27 +70,46 @@ export default function CreatePostsScreen({ navigation }) {
     })();
   }, []);
 
-  const keyboardHide = () => {
-    setIsShowKeyboard(false);
-    Keyboard.dismiss();
+  //   загрузка фото з галереї телефона
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.canceled) {
+      setImageToPostData(result.assets[0].uri);
+    }
   };
 
+  //   работа з камерою, робимо фото
   const takePhoto = async () => {
-    try {
-      const photo = await camera.takePictureAsync();
-      await MediaLibrary.createAssetAsync(photo.uri);
+    const photo = await camera.takePictureAsync();
+    await MediaLibrary.createAssetAsync(photo.uri);
+    // console.log("Save");
+    setImageToPostData(photo);
+  };
 
+  //    обчислюємо координати, записуємо або фото з галереї або фото з камери в state
+  const setImageToPostData = async (img) => {
+    try {
       let location = await Location.getCurrentPositionAsync({});
 
-      setPostData((prevState) => ({ ...prevState, photo: photo.uri }));
-      setLocation(location);
+      let coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
 
-      // console.log("location", location);
+      let address = await Location.reverseGeocodeAsync(coords);
+      let city = address[0].city;
+      setPostData((prevState) => ({ ...prevState, photo: img.uri || img }));
+      setLocation(location);
+      setCity(city);
     } catch (error) {
       console.log(error);
     }
   };
-
   const retakePhoto = () => {
     setPostData((prevState) => ({ ...prevState, photo: "" }));
   };
@@ -93,14 +123,41 @@ export default function CreatePostsScreen({ navigation }) {
   const handleInput = (type, value) => {
     setPostData((prevState) => ({ ...prevState, [type]: value }));
   };
+
+  //   відправка поста на іншу сторінку
   const sendPost = () => {
     navigation.navigate("DefaultPost", {
       postData,
       location: location.coords,
+      city,
     });
     console.log("postData", postData);
     setPostData(initialPostData);
-    // console.log("initialPostData", initialPostData);
+    uploadPhotoToServer();
+  };
+
+  // завантаження фото на firebase
+  const uploadPhotoToServer = async () => {
+    const storage = getStorage();
+    const uniquePostId = Date.now().toString();
+    const storageRef = ref(storage, `images/${uniquePostId}`);
+
+    const response = await fetch(postData.photo);
+    const file = await response.blob();
+
+    await uploadBytes(storageRef, file).then(() => {
+      console.log(`photo is uploaded`);
+    });
+    // const processedPhoto = await getDownloadURL(
+    //   ref(storage, `images/${uniquePostId}`)
+    // )
+    //   .then((url) => {
+    //     return url;
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+    // return processedPhoto;
   };
 
   return (
@@ -147,17 +204,16 @@ export default function CreatePostsScreen({ navigation }) {
               </TouchableOpacity>
             </Camera>
           )}
-          <View style={{ marginTop: 8, marginHorizontal: 16 }}>
+          <TouchableOpacity style={styles.pickImgBtn} onPress={pickImage}>
             <Text
               style={{
-                fontFamily: "Roboto-Regular",
-                fontSize: 16,
-                color: "#BDBDBD",
+                ...styles.btnTitle,
+                color: "#ffffff",
               }}
             >
-              Take new photo
+              Upload photo with gallery
             </Text>
-          </View>
+          </TouchableOpacity>
           <View style={styles.inputWrapper}>
             <TextInput
               style={{ ...styles.input, marginBottom: 16 }}
@@ -178,7 +234,7 @@ export default function CreatePostsScreen({ navigation }) {
               size={24}
               style={{
                 position: "absolute",
-                top: 77,
+                top: 70,
                 left: 16,
                 color: "#CECDCD",
               }}
@@ -196,7 +252,7 @@ export default function CreatePostsScreen({ navigation }) {
             >
               <Text
                 style={{
-                  ...styles.sendBtnTitle,
+                  ...styles.btnTitle,
                   color: postData.photo ? "#fff" : "#BDBDBD",
                 }}
               >
@@ -276,13 +332,21 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   input: {
-    height: 50,
+    height: 45,
     marginHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#E8E8E8",
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     color: "#212121",
+  },
+  pickImgBtn: {
+    marginTop: 18,
+    marginHorizontal: 16,
+    padding: 10,
+    backgroundColor: "#BDBDBD",
+    alignItems: "center",
+    borderRadius: 100,
   },
   sendBtn: {
     fontFamily: "Roboto-Regular",
@@ -294,7 +358,7 @@ const styles = StyleSheet.create({
     marginTop: 32,
     borderRadius: 100,
   },
-  sendBtnTitle: {
+  btnTitle: {
     fontFamily: "Roboto-Regular",
     fontSize: 16,
   },

@@ -20,7 +20,11 @@ export default function DefaultPostsScreen({ navigation, route }) {
     route.params &&
       setPosts((prevState) => [
         ...prevState,
-        { ...route.params.postData, coords: route.params.location },
+        {
+          ...route.params.postData,
+          coords: route.params.location,
+          city: route.params.city,
+        },
       ]);
     // console.log("params", route.params);
   }, [route.params]);
@@ -136,6 +140,7 @@ export default function DefaultPostsScreen({ navigation, route }) {
                     textDecorationLine: "underline",
                   }}
                 >
+                  {item.city}{" "}
                   {item.place}
                 </Text>
               </TouchableOpacity>
