@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
-import { Octicons } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
+import { Octicons, Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
@@ -35,6 +35,8 @@ export default function CreatePostsScreen({ navigation }) {
   const [type, setType] = useState(CameraType.back);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
+  const { userId, name } = useSelector((state) => state.auth);
+  //   console.log(userId, name);
   //   перевірка клавіатури
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -126,14 +128,11 @@ export default function CreatePostsScreen({ navigation }) {
 
   //   відправка поста на іншу сторінку
   const sendPost = () => {
-    navigation.navigate("DefaultPost", {
-      postData,
-      location: location.coords,
-      city,
-    });
+    uploadPostToServer();
+    navigation.navigate("DefaultPost");
     console.log("postData", postData);
     setPostData(initialPostData);
-    uploadPhotoToServer();
+    // uploadPhotoToServer();
   };
 
   // завантаження фото на firebase
@@ -148,16 +147,36 @@ export default function CreatePostsScreen({ navigation }) {
     await uploadBytes(storageRef, file).then(() => {
       console.log(`photo is uploaded`);
     });
-    // const processedPhoto = await getDownloadURL(
-    //   ref(storage, `images/${uniquePostId}`)
-    // )
-    //   .then((url) => {
-    //     return url;
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-    // return processedPhoto;
+    const processedPhoto = await getDownloadURL(
+      ref(storage, `images/${uniquePostId}`)
+    )
+      .then((url) => {
+        return url;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return processedPhoto;
+  };
+
+  // завантаження всього допису "post" на firebase
+  const uploadPostToServer = async () => {
+    const photo = await uploadPhotoToServer();
+    // console.log("photoPost", photo);
+    try {
+      const setUserPost = await addDoc(collection(db, "posts"), {
+        photo,
+        description: postData.description,
+        place: postData.place,
+        location: location.coords,
+        city,
+        userId,
+        name,
+      });
+      //   console.log("Document written with ID: ", setUserPost);
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
   };
 
   return (

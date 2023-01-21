@@ -1,8 +1,7 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { TouchableOpacity } from "react-native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useDispatch } from "react-redux";
-import { Octicons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
+import { Octicons, AntDesign } from "@expo/vector-icons";
 
 import DefaultPostsScreen from "../Nested/DefaultPostsScreen";
 import CommentsScreen from "../Nested/CommentsScreen";
@@ -12,8 +11,8 @@ import { authSignOutUser } from "../../redux/auth/authOperations";
 const NestedScreen = createNativeStackNavigator();
 
 export default function PostsScreen() {
-  const dispatch = useDispatch();
   //   const { email, name } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const signOut = () => {
     dispatch(authSignOutUser());
   };
