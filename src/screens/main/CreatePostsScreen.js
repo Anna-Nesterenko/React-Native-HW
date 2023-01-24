@@ -8,7 +8,7 @@ import * as ImagePicker from "expo-image-picker";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
-// console.log("getStorage", getStorage);
+
 import {
   Text,
   StyleSheet,
@@ -35,8 +35,8 @@ export default function CreatePostsScreen({ navigation }) {
   const [type, setType] = useState(CameraType.back);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
-  const { userId, name } = useSelector((state) => state.auth);
-  //   console.log(userId, name);
+	const { userId, name } = useSelector((state) => state.auth);
+	
   //   перевірка клавіатури
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(

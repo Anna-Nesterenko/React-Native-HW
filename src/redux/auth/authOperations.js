@@ -11,21 +11,23 @@ import { authSlice } from "./authReducer";
 const { updateUserProfile, authStateChange, authSignOut } = authSlice.actions;
 
 export const authSignUpUser =
-  ({ name, email, password }) =>
+  ({ name, email, password, avatar }) =>
   async (dispatch) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
 
       await updateProfile(auth.currentUser, {
         displayName: name,
+        photoURL: avatar,
       });
 
-      const { uid, displayName } = await auth.currentUser;
+      const { uid, displayName, photoURL } = await auth.currentUser;
       dispatch(
         updateUserProfile({
           userId: uid,
           name: displayName,
           email,
+          avatar: photoURL,
         })
       );
       Alert.alert(`Welcome to cabinet`);
@@ -62,12 +64,13 @@ export const authSignOutUser = () => async (dispatch) => {
 export const authStateChangeUser = () => async (dispatch) => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      const { uid, displayName, email } = user;
+      const { uid, displayName, email, photoURL } = user;
       dispatch(
         updateUserProfile({
           userId: uid,
           name: displayName,
           email: email,
+          avatar: photoURL,
         })
       );
       dispatch(authStateChange({ stateChange: true }));

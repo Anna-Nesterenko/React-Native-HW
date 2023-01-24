@@ -10,13 +10,14 @@ import {
   FlatList,
 } from "react-native";
 import { Octicons, FontAwesome, AntDesign } from "@expo/vector-icons";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebase/config";
 
 export default function DefaultPostsScreen({ navigation }) {
-  //   console.log("route", route);
   const [posts, setPosts] = useState([]);
-  const { email, name } = useSelector((state) => state.auth);
+  //   const [allComments, setAllComments] = useState([]);
+  //   console.log(posts.id);
+  const { email, name, avatar } = useSelector((state) => state.auth);
 
   const getAllPosts = async () => {
     const dbRef = collection(db, "posts");
@@ -24,6 +25,8 @@ export default function DefaultPostsScreen({ navigation }) {
       setPosts(docSnap.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
     );
   };
+  //   const dbRef = collection(db, "posts");
+  //   console.log(dbRef);
   useEffect(() => {
     getAllPosts();
   }, []);
@@ -40,7 +43,9 @@ export default function DefaultPostsScreen({ navigation }) {
           <ImageBackground
             style={styles.avatar}
             source={require("../../../assets/images/defaultAvatar.jpg")}
-          ></ImageBackground>
+          >
+            {avatar && <Image style={styles.avatar} source={{ uri: avatar }} />}
+          </ImageBackground>
         </View>
         <View style={styles.userInfoWrapper}>
           <Text style={styles.userName}>{name}</Text>
@@ -57,9 +62,8 @@ export default function DefaultPostsScreen({ navigation }) {
               activeOpacity={0.7}
               onPress={() =>
                 navigation.navigate("Comments", {
-                  //   postId: item.id,
-                  //   photo: item.photo,
-                  //   allComments: item.comments,
+                  postId: item.id,
+                  photo: item.photo,
                 })
               }
             >
@@ -75,9 +79,8 @@ export default function DefaultPostsScreen({ navigation }) {
                   activeOpacity={0.7}
                   onPress={() =>
                     navigation.navigate("Comments", {
-                      //   postId: item.id,
-                      //   photo: item.photo,
-                      //   allComments: item.comments,
+                      postId: item.id,
+                      photo: item.photo,
                     })
                   }
                 >

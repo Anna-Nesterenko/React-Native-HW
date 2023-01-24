@@ -52,11 +52,9 @@ export default function LoginPage({ navigation }) {
   };
 
   const submitForm = () => {
-    // setState(state);
     keyboardHide();
     dispatch(authSignInUser(state));
     // console.log("submitFormLogin", state);
-    // navigation.navigate("Home", { screen: "Posts" });
   };
 
   const handleInput = (type, value) => {
