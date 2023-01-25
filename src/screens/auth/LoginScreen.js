@@ -54,7 +54,6 @@ export default function LoginPage({ navigation }) {
   const submitForm = () => {
     keyboardHide();
     dispatch(authSignInUser(state));
-    // console.log("submitFormLogin", state);
   };
 
   const handleInput = (type, value) => {

@@ -9,22 +9,28 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   SafeAreaView,
+  ImageBackground,
   FlatList,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 
-import { collection, addDoc, doc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  doc,
+  onSnapshot,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../firebase/config";
 
 export default function CommentsScreen({ route }) {
   const { postId, photo } = route.params;
-  //   console.log(route.params);
+  const { userId, name, avatar } = useSelector((state) => state.auth);
+
   const [comment, setComment] = useState("");
   const [allComments, setAllComments] = useState([]);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-console.log(allComments.length);
-  const { name, avatar } = useSelector((state) => state.auth);
 
   //   перевірка клавіатури
   useEffect(() => {
@@ -62,11 +68,16 @@ console.log(allComments.length);
     const time = new Date().toLocaleTimeString();
     try {
       const dbRef = doc(db, "posts", postId);
+      await updateDoc(dbRef, {
+        comments: allComments.length + 1,
+      });
       await addDoc(collection(dbRef, "comments"), {
         comment,
         name,
         date,
         time,
+        userId,
+        avatar,
       });
     } catch (error) {
       console.log("error.message", error.message);
@@ -76,7 +87,6 @@ console.log(allComments.length);
   const getAllComments = async () => {
     try {
       const dbRef = doc(db, "posts", postId);
-      //   console.log(dbRef);
       onSnapshot(collection(dbRef, "comments"), (docSnap) =>
         setAllComments(docSnap.docs.map((doc) => ({ ...doc.data() })))
       );
@@ -90,18 +100,47 @@ console.log(allComments.length);
   }, []);
 
   const renderItem = ({ item }) => {
+    const currentUser = userId === item.userId;
+
     return (
       <View
         style={{
           marginTop: 32,
-          flexDirection: "row",
+          flexDirection: currentUser ? "row" : "row-reverse",
         }}
       >
-        <Image source={{ uri: avatar }} style={styles.avatarIcon} />
+        <Image
+          source={{ uri: item.avatar }}
+          style={{
+            ...styles.avatarIcon,
+            marginRight: currentUser ? 15 : 0,
+            marginLeft: currentUser ? 0 : 15,
+          }}
+        />
         <View style={styles.comment}>
-          <Text style={{ fontSize: 16 }}>User: {name}</Text>
-          <Text>{item.comment}</Text>
-          <Text style={styles.date}>
+          <Text
+            style={{
+              ...styles.commentAuthor,
+              textAlign: currentUser ? "left" : "right",
+            }}
+          >
+            {currentUser ? "You" : item.name}
+          </Text>
+          <Text
+            style={{
+              ...styles.commentMessage,
+              textAlign: currentUser ? "left" : "right",
+            }}
+          >
+            {item.comment}
+          </Text>
+          <Text
+            style={{
+              ...styles.commentDate,
+              textAlign: currentUser ? "left" : "right",
+              textAlign: currentUser ? "left" : "right",
+            }}
+          >
             {item.date} | {item.time}
           </Text>
         </View>
@@ -116,12 +155,13 @@ console.log(allComments.length);
           source={{ uri: photo }}
           style={{ height: 240, borderRadius: 8 }}
         />
-
-        <FlatList
-          data={allComments}
-          keyExtractor={allComments.id}
-          renderItem={renderItem}
-        />
+        <SafeAreaView style={{ flex: 1 }}>
+          <FlatList
+            data={allComments}
+            keyExtractor={allComments.id}
+            renderItem={renderItem}
+          />
+        </SafeAreaView>
 
         <View style={styles.inputContainer}></View>
         <View>
@@ -156,18 +196,30 @@ const styles = StyleSheet.create({
     paddingTop: 32,
     paddingBottom: 32,
   },
-  avatarIcon: { height: 40, width: 40, borderRadius: 100 },
+  avatarIcon: {
+    height: 40,
+    width: 40,
+    borderRadius: 40,
+    overflow: "hidden",
+    resizeMode: "cover",
+  },
   comment: {
     marginLeft: 16,
-    padding: 10,
+    padding: 14,
     width: 300,
-    borderRadius: 8,
+    borderRadius: 20,
     backgroundColor: "rgba(0, 0, 0, 0.03)",
   },
-  date: {
-    fontSize: 12,
-    textAlign: "right",
-    color: "grey",
+  commentMessage: {
+    marginBottom: 5,
+    fontFamily: "Roboto-Regular",
+    fontSize: 14,
+    color: "#212121",
+  },
+  commentDate: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 10,
+    color: "#BDBDBD",
   },
   submitBtn: {
     justifyContent: "center",
@@ -190,6 +242,12 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: "#FF6C00",
     borderRadius: 50,
+  },
+  commentAuthor: {
+    marginBottom: 5,
+    fontFamily: "Roboto-Medium",
+    fontSize: 11,
+    color: "#656565",
   },
   //   inputContainer: {
   //     marginHorizontal: 10,

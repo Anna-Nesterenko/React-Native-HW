@@ -1,32 +1,28 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import {
   Text,
   View,
   StyleSheet,
-  ImageBackground,
   TouchableOpacity,
   Image,
   FlatList,
 } from "react-native";
 import { Octicons, FontAwesome, AntDesign } from "@expo/vector-icons";
-import { collection, doc, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebase/config";
 
 export default function DefaultPostsScreen({ navigation }) {
   const [posts, setPosts] = useState([]);
-  //   const [allComments, setAllComments] = useState([]);
-  //   console.log(posts.id);
-  const { email, name, avatar } = useSelector((state) => state.auth);
 
+  //get запрос на firebase всіх постів
   const getAllPosts = async () => {
     const dbRef = collection(db, "posts");
     onSnapshot(dbRef, (docSnap) =>
       setPosts(docSnap.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
     );
-  };
-  //   const dbRef = collection(db, "posts");
-  //   console.log(dbRef);
+	};
+	
+  //відмальовуваємо всі пости на сторінці
   useEffect(() => {
     getAllPosts();
   }, []);
@@ -34,112 +30,95 @@ export default function DefaultPostsScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.header} />
-      <TouchableOpacity
-        style={styles.avatarWrapper}
-        activeOpacity={0.7}
-        onPress={() => navigation.navigate("Profile")}
-      >
-        <View style={{ overflow: "hidden", borderRadius: 16 }}>
-          <ImageBackground
-            style={styles.avatar}
-            source={require("../../../assets/images/defaultAvatar.jpg")}
-          >
-            {avatar && <Image style={styles.avatar} source={{ uri: avatar }} />}
-          </ImageBackground>
-        </View>
-        <View style={styles.userInfoWrapper}>
-          <Text style={styles.userName}>{name}</Text>
-          <Text style={styles.userEmail}>{email}</Text>
-        </View>
-      </TouchableOpacity>
 
       <FlatList
         data={posts}
         keyExtractor={posts.id}
         renderItem={({ item }) => (
-          <View style={styles.postsContainer}>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() =>
-                navigation.navigate("Comments", {
-                  postId: item.id,
-                  photo: item.photo,
-                })
-              }
-            >
-              <Image source={{ uri: item.photo }} style={styles.postImage} />
-            </TouchableOpacity>
-            <View style={styles.postImageWrapper}>
-              <Text style={styles.postImageTitle}>{item.description}</Text>
+          <View>
+            <View style={styles.avatarWrapper}>
+              <View style={{ overflow: "hidden", borderRadius: 16 }}>
+                <Image style={styles.avatar} source={{ uri: item.avatar }} />
+              </View>
+              <View style={styles.userInfoWrapper}>
+                <Text style={styles.userName}>{item.name}</Text>
+                <Text style={styles.userEmail}>{item.email}</Text>
+              </View>
             </View>
-            <View style={styles.postInfoContainer}>
-              <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity
-                  style={{ ...styles.postInfoBtn, marginRight: 25 }}
-                  activeOpacity={0.7}
-                  onPress={() =>
-                    navigation.navigate("Comments", {
-                      postId: item.id,
-                      photo: item.photo,
-                    })
-                  }
-                >
-                  <FontAwesome
-                    name={item.comments?.length ? "comment" : "comment-o"}
-                    size={24}
-                    color={item.comments?.length ? "#FF6C00" : "#BDBDBD"}
-                  />
-                  <Text
-                    style={{
-                      ...styles.postInfoText,
-                      color: item.comments?.length ? "#212121" : "#BDBDBD",
-                    }}
+            <View style={styles.postsContainer}>
+              <Image source={{ uri: item.photo }} style={styles.postImage} />
+              <View style={styles.postImageWrapper}>
+                <Text style={styles.postImageTitle}>{item.description}</Text>
+              </View>
+              <View style={styles.postInfoContainer}>
+                <View style={{ flexDirection: "row" }}>
+                  <TouchableOpacity
+                    style={{ ...styles.postInfoBtn, marginRight: 25 }}
+                    activeOpacity={0.7}
+                    onPress={() =>
+                      navigation.navigate("Comments", {
+                        postId: item.id,
+                        photo: item.photo,
+                      })
+                    }
                   >
-                    {item.comments?.length || 0}
-                  </Text>
-                </TouchableOpacity>
+                    <FontAwesome
+                      name={item.comments ? "comment" : "comment-o"}
+                      size={24}
+                      color={item.comments ? "#FF6C00" : "#BDBDBD"}
+                    />
+                    <Text
+                      style={{
+                        ...styles.postInfoText,
+                        color: item.comments ? "#212121" : "#BDBDBD",
+                      }}
+                    >
+                      {item.comments || 0}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.postInfoBtn}
+                    activeOpacity={0.7}
+                    //   onPress={() => likeUnlike(item.id)}
+                  >
+                    <AntDesign
+                      name="like2"
+                      size={24}
+                      color={item.likes ? "#FF6C00" : "#BDBDBD"}
+                    />
+                    <Text
+                      style={{
+                        ...styles.postInfoText,
+                        color: item.likes ? "#212121" : "#BDBDBD",
+                      }}
+                    >
+                      {item.likes || 0}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
                 <TouchableOpacity
                   style={styles.postInfoBtn}
                   activeOpacity={0.7}
-                  //   onPress={() => likeUnlike(item.id)}
+                  onPress={() =>
+                    navigation.navigate("Map", {
+                      location: item.location,
+                      title: item.description,
+                      description: item.place,
+                    })
+                  }
                 >
-                  <AntDesign
-                    name="like2"
-                    size={24}
-                    color={item.likes ? "#FF6C00" : "#BDBDBD"}
-                  />
+                  <Octicons name="location" size={24} color="#BDBDBD" />
                   <Text
                     style={{
                       ...styles.postInfoText,
-                      color: item.likes ? "#212121" : "#BDBDBD",
+                      color: "#212121",
+                      textDecorationLine: "underline",
                     }}
                   >
-                    {item.likes || 0}
+                    {item.city} {item.place}
                   </Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={styles.postInfoBtn}
-                activeOpacity={0.7}
-                onPress={() =>
-                  navigation.navigate("Map", {
-                    location: item.location,
-                    title: item.description,
-                    description: item.place,
-                  })
-                }
-              >
-                <Octicons name="location" size={24} color="#BDBDBD" />
-                <Text
-                  style={{
-                    ...styles.postInfoText,
-                    color: "#212121",
-                    textDecorationLine: "underline",
-                  }}
-                >
-                  {item.city} {item.place}
-                </Text>
-              </TouchableOpacity>
             </View>
           </View>
         )}
@@ -168,8 +147,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginHorizontal: 16,
-    marginVertical: 32,
+    marginVertical: 16,
     borderRadius: 16,
+    overflow: "hidden",
   },
   avatar: {
     width: 60,
@@ -210,7 +190,7 @@ const styles = StyleSheet.create({
   postInfoContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 32,
+    marginBottom: 16,
   },
   postInfoBtn: {
     flexDirection: "row",

@@ -71,7 +71,8 @@ export default function RegisterPage({ navigation }) {
     if (!result.canceled) {
       setAvatarUpload(result.assets[0].uri);
     }
-  };
+	};
+	
   //видалення аватара
   const deleteAvatar = async () => {
     setAvatarUpload(null);
@@ -81,7 +82,6 @@ export default function RegisterPage({ navigation }) {
   const submitForm = async () => {
     try {
       const avatarRef = await uploadAvatarToServer();
-      // console.log(`avatarRef`, avatarRef);
       setState((prevState) => ({ ...prevState, avatar: avatarRef }));
       const newState = {
         avatar: avatarRef,

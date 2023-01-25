@@ -16,7 +16,6 @@ import {
   TouchableOpacity,
   Image,
   TouchableWithoutFeedback,
-  KeyboardAvoidingView,
   Keyboard,
   TextInput,
 } from "react-native";
@@ -35,8 +34,8 @@ export default function CreatePostsScreen({ navigation }) {
   const [type, setType] = useState(CameraType.back);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
-	const { userId, name } = useSelector((state) => state.auth);
-	
+  const { userId, name, email, avatar } = useSelector((state) => state.auth);
+
   //   перевірка клавіатури
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -89,7 +88,6 @@ export default function CreatePostsScreen({ navigation }) {
   const takePhoto = async () => {
     const photo = await camera.takePictureAsync();
     await MediaLibrary.createAssetAsync(photo.uri);
-    // console.log("Save");
     setImageToPostData(photo);
   };
 
@@ -130,9 +128,7 @@ export default function CreatePostsScreen({ navigation }) {
   const sendPost = () => {
     uploadPostToServer();
     navigation.navigate("DefaultPost");
-    console.log("postData", postData);
     setPostData(initialPostData);
-    // uploadPhotoToServer();
   };
 
   // завантаження фото на firebase
@@ -162,7 +158,6 @@ export default function CreatePostsScreen({ navigation }) {
   // завантаження всього допису "post" на firebase
   const uploadPostToServer = async () => {
     const photo = await uploadPhotoToServer();
-    // console.log("photoPost", photo);
     try {
       const setUserPost = await addDoc(collection(db, "posts"), {
         photo,
@@ -172,8 +167,9 @@ export default function CreatePostsScreen({ navigation }) {
         city,
         userId,
         name,
+        email,
+        avatar,
       });
-      //   console.log("Document written with ID: ", setUserPost);
     } catch (error) {
       console.error("Error adding document: ", error);
     }
@@ -182,16 +178,12 @@ export default function CreatePostsScreen({ navigation }) {
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
-        {/* <KeyboardAvoidingView
-          behavior={Platform.OS == "ios" ? "padding" : "height"}
-        > */}
         <View style={styles.header} />
         <View style={{ flex: 1 }}>
           {postData.photo ? (
             <View
               style={{
                 ...styles.photoContainer,
-                // paddingBottom: isShowKeyboard ? 30 : 110,
               }}
             >
               <TouchableOpacity
@@ -279,20 +271,7 @@ export default function CreatePostsScreen({ navigation }) {
               </Text>
             </TouchableOpacity>
           </View>
-          {!isShowKeyboard && (
-            <View style={styles.wrapperTrashItem}>
-              <TouchableOpacity
-                style={styles.trashItem}
-                // disabled={!postData.photo}
-                activeOpacity={0.7}
-                // onPress={removeAll}
-              >
-                <Feather name="trash-2" size={24} color="#BDBDBD" />
-              </TouchableOpacity>
-            </View>
-          )}
         </View>
-        {/* </KeyboardAvoidingView> */}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -380,23 +359,5 @@ const styles = StyleSheet.create({
   btnTitle: {
     fontFamily: "Roboto-Regular",
     fontSize: 16,
-  },
-  wrapperTrashItem: {
-    marginLeft: "auto",
-    marginRight: "auto",
-    marginTop: "auto",
-    marginBottom: 10,
-    borderBottomWidth: 5,
-    paddingBottom: 20,
-  },
-  trashItem: {
-    justifyContent: "center",
-    alignItems: "center",
-    paddingLeft: 23,
-    paddingRight: 23,
-    paddingTop: 8,
-    paddingBottom: 8,
-    borderRadius: 20,
-    backgroundColor: "#F6F6F6",
   },
 });
