@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "HWReactNative",
-    "slug": "HWReactNative",
+    "name": "Images App",
+    "slug": "images-app",
+    "description": "This app will help you add your photo",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -14,9 +15,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },

@@ -8,11 +8,19 @@ import {
   FlatList,
 } from "react-native";
 import { Octicons, FontAwesome, AntDesign } from "@expo/vector-icons";
-import { collection, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  updateDoc,
+  doc,
+  addDoc,
+} from "firebase/firestore";
 import { db } from "../../firebase/config";
 
 export default function DefaultPostsScreen({ navigation }) {
   const [posts, setPosts] = useState([]);
+  const [userLikes, setUserLikes] = useState("no");
+  const [likeCount, setLikeCount] = useState(0);
 
   //get запрос на firebase всіх постів
   const getAllPosts = async () => {
@@ -20,12 +28,35 @@ export default function DefaultPostsScreen({ navigation }) {
     onSnapshot(dbRef, (docSnap) =>
       setPosts(docSnap.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
     );
-	};
-	
+  };
+
   //відмальовуваємо всі пости на сторінці
   useEffect(() => {
     getAllPosts();
   }, []);
+
+  //   const likeUnlike = async (postId) => {
+  //     if (userLikes === "no") {
+  //       setUserLikes("yes");
+  //       setLikeCount(+ 1);
+  //       createLike(postId);
+  //     } else {
+  //       setUserLikes("no");
+  //       setLikeCount(0 ? 0 : -1);
+  //       createLike(postId);
+  //     }
+  //   };
+
+  //   const createLike = async (postId) => {
+  //     try {
+  //       const dbRef = doc(db, "posts", postId);
+  //       await updateDoc(dbRef, {
+  //         likes: likeCount,
+  //       });
+  //     } catch (error) {
+  //       console.log("error.message", error.message);
+  //     }
+  //   };
 
   return (
     <View style={styles.container}>
@@ -79,7 +110,7 @@ export default function DefaultPostsScreen({ navigation }) {
                   <TouchableOpacity
                     style={styles.postInfoBtn}
                     activeOpacity={0.7}
-                    //   onPress={() => likeUnlike(item.id)}
+                    // onPress={() => likeUnlike(item.id)}
                   >
                     <AntDesign
                       name="like2"
