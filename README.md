@@ -21,6 +21,13 @@ with the ability to leave comments.</br>
 Firebase was used for this app to register/log in, as well </br>
 as to store photos, comments, etc.
 
-[![Product Name Screen Shot][product-screenshot]]
+![Product Name Screen Shot][product-screenshot]
+![Product Name Screen Shot][product-screenshot1]
+![Product Name Screen Shot][product-screenshot2]
 
-[product-screenshot]: assets/images/code1.jpg
+
+[product-screenshot]: assets/screenshot/code1.jpg
+[product-screenshot1]: assets/screenshot/code.jpg 
+[product-screenshot2]: assets/screenshot/1.jpg 
+
+
